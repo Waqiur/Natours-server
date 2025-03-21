@@ -1,6 +1,7 @@
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import { deleteOne, getAll, getOne, updateOne } from './handleFactory.js';
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -9,17 +10,6 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
-export const getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
 
 export const updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
@@ -44,6 +34,11 @@ export const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+export const getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 export const deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
@@ -52,12 +47,6 @@ export const deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-export const getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
 
 export const createUser = (req, res) => {
   res.status(500).json({
@@ -66,16 +55,10 @@ export const createUser = (req, res) => {
   });
 };
 
-export const updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+export const getUser = getOne(User);
 
-export const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+export const getAllUsers = getAll(User);
+
+export const updateUser = updateOne(User);
+
+export const deleteUser = deleteOne(User);
