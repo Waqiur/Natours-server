@@ -5,7 +5,7 @@ import {
   getAll,
   getOne,
   updateOne,
-} from './handleFactory.js';
+} from './handlerFactory.js';
 
 export const getAllReviews = getAll(Review);
 

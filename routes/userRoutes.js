@@ -8,6 +8,8 @@ import {
   updateMe,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } from '../controllers/userController.js';
 import {
   login,
@@ -34,7 +36,7 @@ router.use(protect);
 router.patch('/updateMyPassword', updatePassword);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));

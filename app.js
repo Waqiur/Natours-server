@@ -15,6 +15,7 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import reviewRouter from './routes/reviewRoutes.js';
 import viewRouter from './routes/viewRoutes.js';
+import bookingRouter from './routes/bookingRoutes.js';
 import cookieParser from 'cookie-parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,13 +40,15 @@ const limiter = rateLimit({
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'self'", 'https://js.stripe.com/'],
 
       // Scripts
       scriptSrc: [
         "'self'",
         'https://api.mapbox.com',
         'https://cdn.jsdelivr.net',
+        'https://js.stripe.com',
+        'https://checkout.stripe.com',
         'blob:',
       ],
 
@@ -115,6 +118,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
