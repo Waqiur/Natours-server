@@ -15,6 +15,7 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import reviewRouter from './routes/reviewRoutes.js';
 import viewRouter from './routes/viewRoutes.js';
+import cookieParser from 'cookie-parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,9 +36,57 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+
+      // Scripts
+      scriptSrc: [
+        "'self'",
+        'https://api.mapbox.com',
+        'https://cdn.jsdelivr.net',
+        'blob:',
+      ],
+
+      // Styles
+      styleSrc: [
+        "'self'",
+        'https://api.mapbox.com',
+        'https://fonts.googleapis.com',
+      ],
+
+      // Fonts
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+
+      // Images
+      imgSrc: [
+        "'self'",
+        'https://api.mapbox.com',
+        'https://api.tiles.mapbox.com',
+        'data:',
+      ],
+
+      // Connect (for API calls)
+      connectSrc: [
+        "'self'",
+        'https://api.mapbox.com',
+        'https://events.mapbox.com',
+        'ws://127.0.0.1:*',
+        'ws://localhost:*',
+        'wss://localhost:*',
+      ],
+
+      // Worker
+      workerSrc: ["'self'", 'blob:'],
+    },
+  })
+);
+
 app.use('/api', limiter);
 
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 app.use(mongoSanitize());
 
