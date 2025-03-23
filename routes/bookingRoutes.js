@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express from 'express';
 import {
   getCheckoutSession,
   getAllBookings,
@@ -6,10 +6,10 @@ import {
   getBooking,
   updateBooking,
   deleteBooking,
-} from './../controllers/bookingController.js';
-import { protect, restrictTo } from './../controllers/authController.js';
+} from '../controllers/bookingController.js';
+import { protect, restrictTo } from '../controllers/authController.js';
 
-const router = Router();
+const router = express.Router();
 
 router.use(protect);
 
